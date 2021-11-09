@@ -36,4 +36,4 @@ jobs:
           git log
           uname -a
           ls -l
-          
+          printenv
