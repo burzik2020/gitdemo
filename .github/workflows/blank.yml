@@ -1,10 +1,6 @@
 name: CI-CD
 env:
-  EB_PACKAGE_S3_BUCKET_NAME : "adv-it-flask-application-packages"
-  EB_APPLICATION_NAME       : "MyFlask"
-  EB_ENVIRONMENT_NAME       : "MyFlask-env"
-  DEPLOY_PACKAGE_NAME       : "flask_app_${{ github.sha }}.zip"
-  AWS_REGION_NAME           : "us-west-2"
+  AWS_REGION_NAME           : "us-west-1"
 
 on:
   push:
@@ -23,5 +19,19 @@ jobs:
 
       - name: Run a runner init script
         run: |
+          export work_dir=`pwd`
           chmod +x scripts/*.sh
-          ./scripts/runner-init.sh
+          ./scripts/runner-init.sh && cd $work_dir
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id    :  ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region           :  ${{ env.AWS_REGION_NAME }}      
+          
+      - name: Run a "terraform init" command
+        run: terraform init
+      
+      - name: Run a "terraform plan" command
+        run: terraform plan -out tfplan
