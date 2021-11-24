@@ -33,9 +33,13 @@ jobs:
           
       - name: Run-tfinit-command
         run: terraform init
+        
+      - name: Run-tfvalidate-command
+        if: steps.Run-tfinit-command.outputs.exit_code == 0      
+        run: terraform validate
       
       - name: Run-tfplan-command
-        if: steps.Run-tfinit-command.outputs.exit_code == 0      
+        if: steps.Run-tfvalidate-command.outputs.exit_code == 0      
         run: terraform plan -out tfplan
         
       - name: Run-tfapply-command
