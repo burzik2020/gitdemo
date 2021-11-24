@@ -31,8 +31,13 @@ jobs:
           aws-secret-access-key:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region           :  ${{ env.AWS_REGION_NAME }}      
           
-      - name: Run a "terraform init" command
+      - name: Run-tfinit-command
         run: terraform init
       
-      - name: Run a "terraform plan" command
+      - name: Run-tfplan-command
+        if: steps.Run-tfinit-command.outputs.exit_code == 0      
         run: terraform plan -out tfplan
+        
+      - name: Run-tfapply-command
+        if: steps.Run-tfplan-command.outputs.exit_code == 0
+        run: terraform apply -auto-approve "tfplan"
