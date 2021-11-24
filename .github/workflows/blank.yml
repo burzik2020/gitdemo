@@ -1,6 +1,7 @@
-name: CI-CD
+name: CI-CD pipeline
 env:
-  AWS_REGION_NAME           : "us-west-1"
+  TFSTATE_S3_BUCKET_NAME : "cluster-state"
+  AWS_REGION_NAME        : "us-west-1"
 
 on:
   push:
